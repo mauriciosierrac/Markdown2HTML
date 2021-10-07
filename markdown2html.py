@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-    Parsing bold syntax
+    comment
 """
 if __name__ == "__main__":
     import sys
@@ -88,7 +88,6 @@ if __name__ == "__main__":
         f = 0
         read = fr.readlines()
         for i, line in enumerate(read):
-            # For inline markdown
             if "**" in line:
                 line = inlineMarkdown(line, "**")
             if "__" in line:
@@ -98,38 +97,29 @@ if __name__ == "__main__":
             if "((" in line and "))" in line:
                 line = caseMarkdown(line) 
                      
-            # split by spaces
             lineSplit = line.split(' ')
             if lineSplit[0] in markD:
-                # Headings
                 if lineSplit[0].startswith('#'):
                     handleHeadings(lineSplit[0])
-                # Lists
                 elif lineSplit[0].startswith("-") or lineSplit[0].startswith("*"):
                     tag = markD[lineSplit[0]]
-                    #if its the first item list
                     if not first:
                         toWrite = "<{}>\n".format(tag)
                         fw.write(toWrite)
                         first = lineSplit[0]
-                    # do every time for '-' or '*'
                     toWrite = line.replace("{} ".format(lineSplit[0]), "<li>")
                     toWrite = toWrite[:-1] + ("</li>\n")
                     fw.write(toWrite)
-                    # if its the last item list
                     if i is len(read) - 1 or not read[i + 1].startswith("{} ".format(first)):
                         toWrite = "</{}>\n".format(tag)
                         fw.write(toWrite)
                         first = 0
             else:
-                # paragraphs 
                 if line[0] != "\n":
-                    #first paragraph
                     if not f:
                         fw.write("<p>\n")
                         f = 1
                     fw.write(line)
-                    # if next line is part of the paragraph
                     if i != len(read) - 1 and read[i + 1][0] != "\n" and read[i + 1][0] not in markD:
                         fw.write("<br/>\n")
                     else: 
